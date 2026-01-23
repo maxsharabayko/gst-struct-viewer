@@ -103,7 +103,7 @@ function parseField(token: string): GstField {
     }
     // Quoted structure content
     if (afterType.startsWith('"')) {
-      const { text, nextIndex } = readQuoted(afterType, 0)
+      const { text } = readQuoted(afterType, 0)
       const content = sanitizeInput(text)
       const innerStruct = parseGstStructure(content)
       return { key, type, value: innerStruct }

@@ -1,0 +1,94 @@
+#root {
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.container h1 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+}
+
+.input-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 1rem;
+  align-items: start;
+}
+
+.input-panel textarea {
+  width: 100%;
+  min-height: 200px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.actions button {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+  background: #1f1f1f;
+  cursor: pointer;
+}
+
+.actions button.secondary {
+  background: transparent;
+}
+
+.output-panel {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  background: #151515;
+}
+
+.error {
+  color: #ff6b6b;
+}
+
+.placeholder {
+  color: #888;
+}
+
+.tree {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.tree .node {
+  margin-left: 1rem;
+}
+
+.tree .row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tree .toggle {
+  width: 1rem;
+  text-align: center;
+  display: inline-block;
+  cursor: pointer;
+  color: #bbb;
+}
+
+.tree .key { color: #89ddff; }
+.tree .type { color: #c792ea; }
+.tree .value { color: #c3e88d; }
+.tree .name { color: #82aaff; font-weight: 600; }

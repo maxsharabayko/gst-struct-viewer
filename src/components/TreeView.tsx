@@ -4,7 +4,7 @@ import type { GstField, GstStructure } from '../parser/gstParser'
 export function Tree({ structure }: { structure: GstStructure }) {
   return (
     <div className="tree">
-      <div className="row"><span className="name">{structure.name}</span></div>
+      <div className="row"><span className="badge badge-struct">struct</span><span className="name">{structure.name}</span></div>
       <div className="node">
         {structure.fields.map((f, idx) => (
           <FieldRow key={idx} field={f} />
@@ -36,8 +36,8 @@ function StructRow({ field, value }: { field: GstField; value: GstStructure }) {
       <div className="row">
         <span className="toggle" onClick={() => setOpen((o) => !o)}>{open ? '▾' : '▸'}</span>
         <span className="key">{field.key}</span>
-        <span className="type">: (structure)</span>
         <span className="value"> = </span>
+        <span className="badge badge-struct">struct</span>
         <span className="name">{value.name}</span>
       </div>
       {open && (
@@ -58,8 +58,9 @@ function ArrayRow({ field, items }: { field: GstField; items: GstStructure[] }) 
       <div className="row">
         <span className="toggle" onClick={() => setOpen((o) => !o)}>{open ? '▾' : '▸'}</span>
         <span className="key">{field.key}</span>
-        <span className="type">: (structure[])</span>
-        <span className="value"> [{items.length}]</span>
+        <span className="value"> = </span>
+        <span className="badge badge-array">array</span>
+        <span className="value">[{items.length}]</span>
       </div>
       {open && (
         <div className="node">
@@ -67,8 +68,9 @@ function ArrayRow({ field, items }: { field: GstField; items: GstStructure[] }) 
             <div key={idx}>
               <div className="row">
                 <span className="toggle" />
-                <span className="value">#{idx}</span>
+                <span className="value index">[{idx}]</span>
                 <span className="value"> = </span>
+                <span className="badge badge-struct">struct</span>
                 <span className="name">{item.name}</span>
               </div>
               <div className="node">

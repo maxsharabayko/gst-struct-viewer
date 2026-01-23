@@ -92,3 +92,25 @@
 .tree .type { color: #c792ea; }
 .tree .value { color: #c3e88d; }
 .tree .name { color: #82aaff; font-weight: 600; }
+
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  line-height: 1;
+  padding: 0.2rem 0.35rem;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.badge-struct {
+  background: rgba(129, 199, 132, 0.15);
+  border-color: rgba(129, 199, 132, 0.4);
+  color: #8bc34a;
+}
+.badge-array {
+  background: rgba(129, 212, 250, 0.15);
+  border-color: rgba(129, 212, 250, 0.4);
+  color: #4fc3f7;
+}
+.tree .value.index { color: #bbb; }

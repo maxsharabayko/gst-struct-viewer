@@ -68,6 +68,21 @@ function parseField(token: string): GstField {
       if (end === -1) throw new Error(`Unclosed <...> for structure: ${token}`)
       const inner = afterType.slice(1, end)
       const content = sanitizeInput(inner)
+      const t = content.trim()
+      if (t.startsWith('[')) {
+        const bEnd = findMatching(t, 0, '[', ']')
+        if (bEnd === -1) throw new Error(`Unclosed [...] inside <...>: ${token}`)
+        const core = sanitizeInput(t.slice(1, bEnd))
+        const innerStruct = parseGstStructure(core)
+        return { key, type, value: innerStruct }
+      }
+      if (t.startsWith('{')) {
+        const bEnd = findMatching(t, 0, '{', '}')
+        if (bEnd === -1) throw new Error(`Unclosed {...} inside <...>: ${token}`)
+        const core = t.slice(1, bEnd)
+        const items = parseStructureArray(core)
+        return { key, type, value: items }
+      }
       const innerStruct = parseGstStructure(content)
       return { key, type, value: innerStruct }
     }

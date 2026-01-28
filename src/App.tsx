@@ -38,6 +38,8 @@ function App() {
       <h1>GST Structure Viewer</h1>
       <div className="input-panel">
         <textarea
+          id="gst-structure-input"
+          name="gst-structure-input"
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Paste serialized GST_STRUCTURE here..."

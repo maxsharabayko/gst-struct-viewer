@@ -1,83 +1,116 @@
 #root {
   width: 100%;
-  max-width: 1800px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2.5rem 2rem;
 }
 
 .container h1 {
   margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.6rem;
+  margin-bottom: 2rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .input-panel {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 240px;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-  align-items: start;
 }
 
 .input-panel textarea {
   width: 100%;
-  min-height: 200px;
+  min-height: 220px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 12px;
-  line-height: 1.4;
-  padding: 0.75rem;
-  border-radius: 8px;
-  border: 1px solid #3a3a3a;
+  line-height: 1.5;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background: #1a1a1a;
+  color: #e0e0e0;
   resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-panel textarea:focus {
+  outline: none;
+  border-color: #555;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
 }
 
 .actions {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .actions button {
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #3a3a3a;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: 1px solid #333;
   background: #1f1f1f;
+  color: #e0e0e0;
   cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.actions button:hover {
+  background: #2a2a2a;
+  border-color: #444;
+}
+
+.actions button:active {
+  background: #1a1a1a;
 }
 
 .actions button.secondary {
   background: transparent;
+  border-color: #333;
+}
+
+.actions button.secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #444;
 }
 
 .output-panel {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  border: 1px solid #3a3a3a;
-  border-radius: 8px;
-  background: #151515;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: #1a1a1a;
+  min-height: 400px;
 }
 
 .error {
   color: #ff6b6b;
+  font-size: 0.95rem;
 }
 
 .placeholder {
-  color: #888;
+  color: #666;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 4rem 2rem;
 }
 
 .tree {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .tree .node {
-  margin-left: 1rem;
+  margin-left: 1.2rem;
 }
 
 .tree .row {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .tree .toggle {
@@ -85,23 +118,25 @@
   text-align: center;
   display: inline-block;
   cursor: pointer;
-  color: #bbb;
+  color: #888;
+  user-select: none;
 }
 
 .tree .key { color: #89ddff; }
 .tree .type { color: #c792ea; }
 .tree .value { color: #c3e88d; }
-.tree .name { color: #82aaff; font-weight: 600; }
+.tree .name { color: #82aaff; font-weight: 500; }
 
 .badge {
   display: inline-block;
   font-size: 10px;
   line-height: 1;
-  padding: 0.2rem 0.35rem;
-  border-radius: 4px;
+  padding: 0.25rem 0.4rem;
+  border-radius: 3px;
   border: 1px solid transparent;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+  font-weight: 600;
 }
 .badge-struct {
   background: rgba(129, 199, 132, 0.15);
@@ -113,4 +148,4 @@
   border-color: rgba(129, 212, 250, 0.4);
   color: #4fc3f7;
 }
-.tree .value.index { color: #bbb; }
+.tree .value.index { color: #888; }

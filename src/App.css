@@ -23,19 +23,6 @@
   gap: 0.5rem;
 }
 
-.input-panel-header {
-  padding: 0.5rem 0;
-}
-
-
-
-.input-label {
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #888;
-}
-
 .input-panel textarea {
   box-sizing: border-box;
   width: 100%;
@@ -66,8 +53,6 @@
 .input-panel.collapsed .actions {
   display: flex;
 }
-
-
 
 .actions button {
   padding: 0.6rem 1.2rem;
@@ -174,6 +159,5 @@
   color: #4fc3f7;
 }
 .tree .value.index { color: #888; }
-
 
 

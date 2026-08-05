@@ -19,7 +19,33 @@
   gap: 1rem;
 }
 
+.input-panel.collapsed {
+  gap: 0.75rem;
+}
+
+.input-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.input-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.input-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+}
+
 .input-panel textarea {
+  box-sizing: border-box;
   width: 100%;
   min-height: 220px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -43,6 +69,14 @@
 .actions {
   display: flex;
   gap: 0.75rem;
+}
+
+.input-panel.collapsed .actions {
+  display: none;
+}
+
+.input-panel-header button.secondary {
+  padding: 0.5rem 0.9rem;
 }
 
 .actions button {
@@ -77,8 +111,9 @@
 }
 
 .output-panel {
+  box-sizing: border-box;
   margin-top: 2rem;
-  padding: 1.5rem;
+  padding: 1rem;
   border: 1px solid #333;
   border-radius: 6px;
   background: #1a1a1a;
@@ -149,3 +184,4 @@
   color: #4fc3f7;
 }
 .tree .value.index { color: #888; }
+

@@ -36,10 +36,16 @@ function App() {
   }, [parsed, error])
 
   return (
-    <div className="container">
-      <h1>GST Structure Viewer</h1>
-      <div className={`input-panel ${inputCollapsed ? 'collapsed' : ''}`}>
+    <div className="app-shell">
+      <header className="app-header">
+        <div>
+          <p className="eyebrow">ONLINE</p>
+          <h1>GST Structure Viewer</h1>
+          <p className="subtitle">Parse and inspect serialized GST_STRUCTURE data.</p>
+        </div>
+      </header>
 
+      <section className="card input-panel">
         {!inputCollapsed && (
           <textarea
             id="gst-structure-input"
@@ -53,7 +59,7 @@ function App() {
         <div className="actions">
           {!inputCollapsed && (
             <>
-              <button onClick={handleParse}>Parse</button>
+              <button className="primary" onClick={handleParse}>Parse</button>
               <button className="secondary" onClick={handleClear}>Clear</button>
             </>
           )}
@@ -63,8 +69,9 @@ function App() {
             </button>
           )}
         </div>
-      </div>
-      <div className="output-panel">
+      </section>
+
+      <div className="card output-panel">
         {content}
       </div>
     </div>
@@ -72,4 +79,3 @@ function App() {
 }
 
 export default App
-

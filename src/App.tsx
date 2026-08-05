@@ -9,12 +9,14 @@ function App() {
   const [text, setText] = useState<string>(SAMPLE)
   const [parsed, setParsed] = useState<GstStructure | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [inputCollapsed, setInputCollapsed] = useState(false)
 
   const handleParse = () => {
     try {
       const p = parseGstStructure(text)
       setParsed(p)
       setError(null)
+      setInputCollapsed(true)
     } catch (e: any) {
       setParsed(null)
       setError(e?.message || 'Failed to parse GST structure')
@@ -36,18 +38,34 @@ function App() {
   return (
     <div className="container">
       <h1>GST Structure Viewer</h1>
-      <div className="input-panel">
-        <textarea
-          id="gst-structure-input"
-          name="gst-structure-input"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Paste serialized GST_STRUCTURE here..."
-          spellCheck={false}
-        />
+      <div className={`input-panel ${inputCollapsed ? 'collapsed' : ''}`}>
+        {inputCollapsed && (
+          <div className="input-panel-header">
+            <span className="input-label">Input</span>
+          </div>
+        )}
+        {!inputCollapsed && (
+          <textarea
+            id="gst-structure-input"
+            name="gst-structure-input"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Paste serialized GST_STRUCTURE here..."
+            spellCheck={false}
+          />
+        )}
         <div className="actions">
-          <button onClick={handleParse}>Parse</button>
-          <button className="secondary" onClick={handleClear}>Clear</button>
+          {!inputCollapsed && (
+            <>
+              <button onClick={handleParse}>Parse</button>
+              <button className="secondary" onClick={handleClear}>Clear</button>
+            </>
+          )}
+          {inputCollapsed && parsed && (
+            <button className="secondary" onClick={() => setInputCollapsed(false)}>
+              Edit input
+            </button>
+          )}
         </div>
       </div>
       <div className="output-panel">

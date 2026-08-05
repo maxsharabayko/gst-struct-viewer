@@ -31,7 +31,7 @@ function App() {
 
   const content = useMemo(() => {
     if (error) return <div className="error">{error}</div>
-    if (!parsed) return <div className="placeholder">Paste GST_STRUCTURE and press Parse</div>
+    if (!parsed) return <div className="placeholder">Paste GST_STRUCTURE in the input field above and press Parse</div>
     return <Tree structure={parsed} />
   }, [parsed, error])
 

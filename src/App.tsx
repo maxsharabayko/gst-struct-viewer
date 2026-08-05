@@ -39,11 +39,7 @@ function App() {
     <div className="container">
       <h1>GST Structure Viewer</h1>
       <div className={`input-panel ${inputCollapsed ? 'collapsed' : ''}`}>
-        {inputCollapsed && (
-          <div className="input-panel-header">
-            <span className="input-label">Input</span>
-          </div>
-        )}
+
         {!inputCollapsed && (
           <textarea
             id="gst-structure-input"
@@ -76,3 +72,4 @@ function App() {
 }
 
 export default App
+

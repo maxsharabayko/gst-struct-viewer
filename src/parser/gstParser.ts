@@ -10,6 +10,7 @@ export interface GstStructure {
 }
 
 type GstPrimitive = string | number | boolean | null
+type GstValue = GstPrimitive | GstStructure | GstStructure[]
 
 export function parseGstStructure(input: string): GstStructure {
   const cleaned = sanitizeInput(input)
@@ -25,6 +26,14 @@ export function parseGstStructure(input: string): GstStructure {
     fields.push(field)
   }
   return { name, fields }
+}
+
+export function formatGstValue(value: GstValue): string {
+  if (typeof value === 'string') return value
+  if (typeof value === 'number') return String(value)
+  if (typeof value === 'boolean') return value ? 'true' : 'false'
+  if (value === null) return 'null'
+  return ''
 }
 
 function sanitizeInput(src: string): string {
@@ -120,15 +129,16 @@ function parseField(token: string): GstField {
     const { text } = readQuoted(valueStr, 0)
     valueStr = text
   }
-  const value = coercePrimitive(valueStr)
+  const value = coercePrimitive(valueStr, type)
   return { key, type, value }
 }
 
-function coercePrimitive(v: string): GstPrimitive {
+function coercePrimitive(v: string, type?: string): GstPrimitive {
   const s = stripTrailingSemicolons(v).trim()
   if (s === 'null') return null
   if (s === 'true') return true
   if (s === 'false') return false
+  if (type === 'string' || type === 'GstString') return s.replace(/^"|"$/g, '')
   // Remove optional surrounding quotes (already handled in most paths)
   const uq = s.replace(/^"|"$/g, '')
   // integers

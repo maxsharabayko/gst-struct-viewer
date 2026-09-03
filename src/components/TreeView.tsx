@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { GstField, GstStructure } from '../parser/gstParser'
+import { formatGstValue, type GstField, type GstStructure } from '../parser/gstParser'
 
 export function Tree({ structure }: { structure: GstStructure }) {
   return (
@@ -16,15 +16,20 @@ export function Tree({ structure }: { structure: GstStructure }) {
 
 function FieldRow({ field }: { field: GstField }) {
   const isArray = Array.isArray(field.value)
-  const isStruct = !isArray && typeof field.value === 'object' && field.value !== null && 'name' in (field.value as any)
+  const isStruct =
+    !isArray &&
+    typeof field.value === 'object' &&
+    field.value !== null &&
+    'name' in field.value &&
+    'fields' in field.value
   if (isArray) return <ArrayRow field={field} items={field.value as GstStructure[]} />
   if (isStruct) return <StructRow field={field} value={field.value as GstStructure} />
   return (
     <div className="row">
       <span className="toggle" />
       <span className="key">{field.key}</span>
-      {field.type && <span className="type">: ({field.type})</span>}
-      <span className="value">= {String(field.value)}</span>
+      {field.type && <span className="type">{` : (${field.type})`}</span>}
+      <span className="value">{` = ${formatGstValue(field.value)}`}</span>
     </div>
   )
 }

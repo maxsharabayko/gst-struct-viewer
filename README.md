@@ -24,4 +24,4 @@ The parser is resilient to typical GStreamer escaping (like `\,`, `\=`) and nest
 ## Notes
 - Numbers are coerced to JavaScript numbers when possible; strings retain quotes only when necessary.
 - Unknown or irregular shapes fall back to best-effort parsing; if input is malformed you’ll see an error.
-
+- When displaying typed fields, the viewer keeps the full `key : (type)value` text so values like `layout=(string)2.0` do not lose the fractional suffix.

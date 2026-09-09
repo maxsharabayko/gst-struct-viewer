@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { formatGstValue, type GstField, type GstStructure } from '../parser/gstParser'
+import { formatGstValue, type GstCollection, type GstField, type GstStructure } from '../parser/gstParser'
 
 export function Tree({ structure }: { structure: GstStructure }) {
   return (
@@ -15,14 +15,14 @@ export function Tree({ structure }: { structure: GstStructure }) {
 }
 
 function FieldRow({ field }: { field: GstField }) {
-  const isArray = Array.isArray(field.value)
+  if (isGstCollection(field.value)) {
+    return <CollectionRow field={field} collection={field.value} />
+  }
   const isStruct =
-    !isArray &&
     typeof field.value === 'object' &&
     field.value !== null &&
     'name' in field.value &&
     'fields' in field.value
-  if (isArray) return <ArrayRow field={field} items={field.value as GstStructure[]} />
   if (isStruct) return <StructRow field={field} value={field.value as GstStructure} />
   return (
     <div className="row">
@@ -32,6 +32,10 @@ function FieldRow({ field }: { field: GstField }) {
       <span className="value">{` = ${formatGstValue(field.value)}`}</span>
     </div>
   )
+}
+
+function isGstCollection(value: GstField['value']): value is GstCollection {
+  return typeof value === 'object' && value !== null && 'kind' in value && 'items' in value
 }
 
 function StructRow({ field, value }: { field: GstField; value: GstStructure }) {
@@ -56,15 +60,16 @@ function StructRow({ field, value }: { field: GstField; value: GstStructure }) {
   )
 }
 
-function ArrayRow({ field, items }: { field: GstField; items: GstStructure[] }) {
+function CollectionRow({ field, collection }: { field: GstField; collection: GstCollection }) {
   const [open, setOpen] = useState(true)
+  const { items, kind } = collection
   return (
     <div>
       <div className="row">
         <span className="toggle" onClick={() => setOpen((o) => !o)}>{open ? '▾' : '▸'}</span>
         <span className="key">{field.key}</span>
         <span className="value"> = </span>
-        <span className="badge badge-array">array</span>
+        <span className="badge badge-array">{kind}</span>
         <span className="value">[{items.length}]</span>
       </div>
       {open && (

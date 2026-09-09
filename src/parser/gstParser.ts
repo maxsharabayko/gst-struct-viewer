@@ -1,7 +1,7 @@
 export interface GstField {
   key: string
   type?: string
-  value: GstPrimitive | GstStructure | GstStructure[]
+  value: GstPrimitive | GstStructure | GstCollection
 }
 
 export interface GstStructure {
@@ -9,8 +9,15 @@ export interface GstStructure {
   fields: GstField[]
 }
 
+export type GstCollectionKind = 'array' | 'list'
+
+export interface GstCollection {
+  kind: GstCollectionKind
+  items: GstStructure[]
+}
+
 type GstPrimitive = string | number | boolean | null
-type GstValue = GstPrimitive | GstStructure | GstStructure[]
+type GstValue = GstPrimitive | GstStructure | GstCollection
 
 export function parseGstStructure(input: string): GstStructure {
   const cleaned = sanitizeInput(input)
@@ -45,7 +52,7 @@ function sanitizeInput(src: string): string {
   let iter = 0
   while (s !== prev && iter < 6) {
     prev = s
-    s = s.replace(/\\([,=()<>;"\\\[\]\{\} ])/g, '$1')
+    s = s.replace(/\\([,=()<>;"\\\]{}  [])/g, '$1')
     iter++
   }
   // Normalize whitespace around commas
@@ -70,30 +77,13 @@ function parseField(token: string): GstField {
   const type = rest.slice(1, closeType)
   const afterType = rest.slice(closeType + 1).trim()
 
-  // Structures may appear as < ... > or [ ... ] or { ... } or "..." sequences
+  // GStreamer uses brackets for embedded structures, braces for lists, and angles for arrays.
   if (type === 'structure') {
     if (afterType.startsWith('<')) {
       const end = findMatching(afterType, 0, '<', '>')
       if (end === -1) throw new Error(`Unclosed <...> for structure: ${token}`)
       const inner = afterType.slice(1, end)
-      const content = sanitizeInput(inner)
-      const t = content.trim()
-      if (t.startsWith('[')) {
-        const bEnd = findMatching(t, 0, '[', ']')
-        if (bEnd === -1) throw new Error(`Unclosed [...] inside <...>: ${token}`)
-        const core = sanitizeInput(t.slice(1, bEnd))
-        const innerStruct = parseGstStructure(core)
-        return { key, type, value: innerStruct }
-      }
-      if (t.startsWith('{')) {
-        const bEnd = findMatching(t, 0, '{', '}')
-        if (bEnd === -1) throw new Error(`Unclosed {...} inside <...>: ${token}`)
-        const core = t.slice(1, bEnd)
-        const items = parseStructureArray(core)
-        return { key, type, value: items }
-      }
-      const innerStruct = parseGstStructure(content)
-      return { key, type, value: innerStruct }
+      return { key, type, value: { kind: 'array', items: parseStructureArray(inner) } }
     }
     if (afterType.startsWith('[')) {
       const end = findMatching(afterType, 0, '[', ']')
@@ -108,7 +98,7 @@ function parseField(token: string): GstField {
       if (end === -1) throw new Error(`Unclosed {...} for structure: ${token}`)
       const inner = afterType.slice(1, end)
       const items = parseStructureArray(inner)
-      return { key, type, value: items }
+      return { key, type, value: { kind: 'list', items } }
     }
     // Quoted structure content
     if (afterType.startsWith('"')) {

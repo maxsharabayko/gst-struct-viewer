@@ -13,10 +13,10 @@ export type GstCollectionKind = 'array' | 'list'
 
 export interface GstCollection {
   kind: GstCollectionKind
-  items: GstStructure[]
+  items: (GstStructure | GstPrimitive)[]
 }
 
-type GstPrimitive = string | number | boolean | null
+export type GstPrimitive = string | number | boolean | null
 type GstValue = GstPrimitive | GstStructure | GstCollection
 
 export function parseGstStructure(input: string): GstStructure {
@@ -68,6 +68,19 @@ function parseField(token: string): GstField {
 
   // Expect (type)prefix
   if (!rest.startsWith('(')) {
+    // Untyped arrays/lists of primitives, e.g. array=<1, 2, 3>
+    if (rest.startsWith('<')) {
+      const end = findMatching(rest, 0, '<', '>')
+      if (end === -1) throw new Error(`Unclosed <...> for field: ${token}`)
+      const inner = rest.slice(1, end)
+      return { key, value: { kind: 'array', items: parseCollectionItems(inner) } }
+    }
+    if (rest.startsWith('{')) {
+      const end = findMatching(rest, 0, '{', '}')
+      if (end === -1) throw new Error(`Unclosed {...} for field: ${token}`)
+      const inner = rest.slice(1, end)
+      return { key, value: { kind: 'list', items: parseCollectionItems(inner) } }
+    }
     // Some strings could be bare values; treat as string
     return { key, value: coercePrimitive(rest) }
   }
@@ -113,7 +126,19 @@ function parseField(token: string): GstField {
     return { key, type, value: innerStruct }
   }
 
-  // Primitive typed value; may be quoted
+  // Primitive typed value; may be array/list or a single (possibly quoted) value
+  if (afterType.startsWith('<')) {
+    const end = findMatching(afterType, 0, '<', '>')
+    if (end === -1) throw new Error(`Unclosed <...> for field: ${token}`)
+    const inner = afterType.slice(1, end)
+    return { key, type, value: { kind: 'array', items: parseCollectionItems(inner, type) } }
+  }
+  if (afterType.startsWith('{')) {
+    const end = findMatching(afterType, 0, '{', '}')
+    if (end === -1) throw new Error(`Unclosed {...} for field: ${token}`)
+    const inner = afterType.slice(1, end)
+    return { key, type, value: { kind: 'list', items: parseCollectionItems(inner, type) } }
+  }
   let valueStr = stripTrailingSemicolons(afterType)
   if (valueStr.startsWith('"')) {
     const { text } = readQuoted(valueStr, 0)
@@ -216,6 +241,34 @@ function readQuoted(s: string, start: number): { text: string; nextIndex: number
 
 function stripTrailingSemicolons(s: string): string {
   return s.replace(/;+\s*$/, '')
+}
+
+function parseCollectionItems(content: string, elementType?: string): (GstStructure | GstPrimitive)[] {
+  const s = sanitizeInput(content)
+  const parts = splitTopLevel(s, ',')
+  const items: (GstStructure | GstPrimitive)[] = []
+  for (const raw of parts) {
+    const trimmed = stripTrailingSemicolons(raw).trim()
+    if (!trimmed) continue
+    if (trimmed.startsWith('[')) {
+      const end = findMatching(trimmed, 0, '[', ']')
+      const inner = end === -1 ? trimmed.slice(1) : trimmed.slice(1, end)
+      items.push(parseGstStructure(sanitizeInput(inner)))
+      continue
+    }
+    if (trimmed.startsWith('(')) {
+      // Element carries its own (type)value, e.g. (int)1
+      const closeType = findMatching(trimmed, 0, '(', ')')
+      if (closeType !== -1) {
+        const itemType = trimmed.slice(1, closeType)
+        const itemValueStr = trimmed.slice(closeType + 1).trim()
+        items.push(coercePrimitive(itemValueStr, itemType))
+        continue
+      }
+    }
+    items.push(coercePrimitive(trimmed, elementType))
+  }
+  return items
 }
 
 function parseStructureArray(content: string): GstStructure[] {

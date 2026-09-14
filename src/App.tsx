@@ -3,7 +3,7 @@ import './App.css'
 import { parseGstStructure, type GstStructure } from './parser/gstParser'
 import { Tree } from './components/TreeView'
 
-const SAMPLE = `stats, layout=(string)2.0, type=(MyType)typeEnum1, substruct=(structure)[stats, state=(MyState)error, error=(ErrorCode)unsupported, metrics=(structure)[metrics, count=(gulong)10, ratio=(double)1.5;];];`
+const SAMPLE = `stats, layout=(string)2.0, type=(MyType)typeEnum1, array=<1, 2, 3>, substruct=(structure)[stats, state=(MyState)error, error=(ErrorCode)unsupported, metrics=(structure)[metrics, count=(gulong)10, ratio=(double)1.5;];];`
 
 function App() {
   const [text, setText] = useState<string>(SAMPLE)

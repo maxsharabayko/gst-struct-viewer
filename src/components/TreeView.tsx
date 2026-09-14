@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { formatGstValue, type GstCollection, type GstField, type GstStructure } from '../parser/gstParser'
 
+function isStructureValue(value: unknown): value is GstStructure {
+  return typeof value === 'object' && value !== null && 'name' in value && 'fields' in value
+}
+
 export function Tree({ structure }: { structure: GstStructure }) {
   return (
     <div className="tree">
@@ -18,12 +22,7 @@ function FieldRow({ field }: { field: GstField }) {
   if (isGstCollection(field.value)) {
     return <CollectionRow field={field} collection={field.value} />
   }
-  const isStruct =
-    typeof field.value === 'object' &&
-    field.value !== null &&
-    'name' in field.value &&
-    'fields' in field.value
-  if (isStruct) return <StructRow field={field} value={field.value as GstStructure} />
+  if (isStructureValue(field.value)) return <StructRow field={field} value={field.value} />
   return (
     <div className="row">
       <span className="toggle" />
@@ -75,23 +74,38 @@ function CollectionRow({ field, collection }: { field: GstField; collection: Gst
       {open && (
         <div className="node">
           {items.map((item, idx) => (
-            <div key={idx}>
-              <div className="row">
-                <span className="toggle" />
-                <span className="value index">[{idx}]</span>
-                <span className="value"> = </span>
-                <span className="badge badge-struct">struct</span>
-                <span className="name">{item.name}</span>
-              </div>
-              <div className="node">
-                {item.fields.map((f, i2) => (
-                  <FieldRow key={i2} field={f} />
-                ))}
-              </div>
-            </div>
+            <CollectionItemRow key={idx} index={idx} item={item} />
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+function CollectionItemRow({ index, item }: { index: number; item: GstStructure | string | number | boolean | null }) {
+  if (isStructureValue(item)) {
+    return (
+      <div>
+        <div className="row">
+          <span className="toggle" />
+          <span className="value index">[{index}]</span>
+          <span className="value"> = </span>
+          <span className="badge badge-struct">struct</span>
+          <span className="name">{item.name}</span>
+        </div>
+        <div className="node">
+          {item.fields.map((f, i2) => (
+            <FieldRow key={i2} field={f} />
+          ))}
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div className="row">
+      <span className="toggle" />
+      <span className="value index">[{index}]</span>
+      <span className="value">{` = ${formatGstValue(item)}`}</span>
     </div>
   )
 }

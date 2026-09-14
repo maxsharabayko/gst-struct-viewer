@@ -67,6 +67,7 @@ function CollectionRow({ field, collection }: { field: GstField; collection: Gst
       <div className="row">
         <span className="toggle" onClick={() => setOpen((o) => !o)}>{open ? '▾' : '▸'}</span>
         <span className="key">{field.key}</span>
+        {field.type && <span className="type">{` : (${field.type})`}</span>}
         <span className="value"> = </span>
         <span className="badge badge-array">{kind}</span>
         <span className="value">[{items.length}]</span>
